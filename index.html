@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow - Quản lý Công việc Hiện đại</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                            950: '#082f49',
+                        },
+                        secondary: {
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            200: '#fed7aa',
+                            300: '#fdba74',
+                            400: '#fb923c',
+                            500: '#f97316',
+                            600: '#ea580c',
+                            700: '#c2410c',
+                            800: '#9a3412',
+                            900: '#7c2d12',
+                            950: '#431407',
+                        },
+                        success: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                            950: '#052e16',
+                        },
+                        danger: {
+                            50: '#fef2f2',
+                            100: '#fee2e2',
+                            200: '#fecaca',
+                            300: '#fca5a5',
+                            400: '#f87171',
+                            500: '#ef4444',
+                            600: '#dc2626',
+                            700: '#b91c1c',
+                            800: '#991b1b',
+                            900: '#7f1d1d',
+                            950: '#450a0a',
+                        },
+                        warning: {
+                            50: '#fffbeb',
+                            100: '#fef3c7',
+                            200: '#fde68a',
+                            300: '#fcd34d',
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309',
+                            800: '#92400e',
+                            900: '#78350f',
+                            950: '#451a03',
+                        },
+                        info: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                            950: '#172554',
+                        },
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'card': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                        'card-hover': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+                        'dropdown': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'bounce-slow': 'bounce 2s infinite',
+                        'fade-in': 'fadeIn 0.3s ease-in-out',
+                        'slide-up': 'slideUp 0.3s ease-in-out',
+                        'slide-down': 'slideDown 0.3s ease-in-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(10px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        slideDown: {
+                            '0%': { transform: 'translateY(-10px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                    },
+                },
+            },
+            plugins: [],
+        }
+    </script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 min-h-screen">
+    <div class="container mx-auto px-4 py-6">
+        <!-- Header Section -->
+        <header class="mb-8">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <div class="bg-primary-500 text-white p-2 rounded-lg mr-3">
+                        <i class="fas fa-tasks text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-800 dark:text-white">TaskFlow</h1>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Quản lý công việc hiệu quả</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <button id="toggle-stats-btn" class="flex items-center px-4 py-2 bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300 rounded-lg hover:bg-primary-200 dark:hover:bg-primary-800 transition-colors">
+                        <i class="fas fa-chart-bar mr-2"></i>
+                        <span>Thống kê</span>
+                    </button>
+                    <button id="view-templates-btn" class="flex items-center px-4 py-2 bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-clipboard-list mr-2"></i>
+                        <span>Mẫu</span>
+                    </button>
+                    <button id="view-archive-btn" class="flex items-center px-4 py-2 bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-archive mr-2"></i>
+                        <span>Lưu trữ</span>
+                    </button>
+                    <button id="toggle-dark-mode" class="flex items-center justify-center w-10 h-10 bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:block"></i>
+                    </button>
+                    <button id="add-task-btn" class="flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
+                        <i class="fas fa-plus mr-2"></i>
+                        <span>Thêm công việc</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Search and Filter Bar -->
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                <div class="relative w-full md:w-64">
+                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" id="search-input" class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-600" placeholder="Tìm kiếm công việc...">
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <div class="relative">
+                        <button id="filter-btn" class="flex items-center px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                            <i class="fas fa-filter mr-2 text-gray-600 dark:text-gray-400"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Lọc</span>
+                        </button>
+                        <div id="filter-dropdown" class="dropdown-menu p-4 w-64">
+                            <h4 class="font-medium text-gray-700 dark:text-gray-300 mb-2">Ưu tiên</h4>
+                            <div class="mb-4">
+                                <div class="flex items-center mb-2">
+                                    <input type="checkbox" id="filter-high" class="mr-2" data-priority="high">
+                                    <label for="filter-high" class="text-gray-700 dark:text-gray-300">Cao</label>
+                                </div>
+                                <div class="flex items-center mb-2">
+                                    <input type="checkbox" id="filter-medium" class="mr-2" data-priority="medium">
+                                    <label for="filter-medium" class="text-gray-700 dark:text-gray-300">Trung bình</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="filter-low" class="mr-2" data-priority="low">
+                                    <label for="filter-low" class="text-gray-700 dark:text-gray-300">Thấp</label>
+                                </div>
+                            </div>
+                            <h4 class="font-medium text-gray-700 dark:text-gray-300 mb-2">Nhãn</h4>
+                            <div class="mb-4">
+                                <div class="flex items-center mb-2">
+                                    <input type="checkbox" id="filter-work" class="mr-2" data-tag="work">
+                                    <label for="filter-work" class="text-gray-700 dark:text-gray-300">Công việc</label>
+                                </div>
+                                <div class="flex items-center mb-2">
+                                    <input type="checkbox" id="filter-personal" class="mr-2" data-tag="personal">
+                                    <label for="filter-personal" class="text-gray-700 dark:text-gray-300">Cá nhân</label>
+                                </div>
+                                <div class="flex items-center mb-2">
+                                    <input type="checkbox" id="filter-study" class="mr-2" data-tag="study">
+                                    <label for="filter-study" class="text-gray-700 dark:text-gray-300">Học tập</label>
+                                </div>
+                                <div class="flex items-center mb-2">
+                                    <input type="checkbox" id="filter-health" class="mr-2" data-tag="health">
+                                    <label for="filter-health" class="text-gray-700 dark:text-gray-300">Sức khỏe</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="filter-finance" class="mr-2" data-tag="finance">
+                                    <label for="filter-finance" class="text-gray-700 dark:text-gray-300">Tài chính</label>
+                                </div>
+                            </div>
+                            <div class="flex justify-end">
+                                <button id="clear-filters" class="px-3 py-1 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200">
+                                    Xóa bộ lọc
+                                </button>
+                                <button id="apply-filters" class="px-3 py-1 text-sm bg-primary-600 text-white rounded-md hover:bg-primary-700 ml-2">
+                                    Áp dụng
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <button id="sort-btn" class="flex items-center px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                            <i class="fas fa-sort mr-2 text-gray-600 dark:text-gray-400"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Sắp xếp</span>
+                        </button>
+                    </div>
+                    <div class="relative">
+                        <button id="view-btn" class="flex items-center px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                            <i class="fas fa-th-large mr-2 text-gray-600 dark:text-gray-400"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Chế độ xem</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Chips -->
+            <div id="active-filters" class="mb-4 hidden">
+                <div class="flex flex-wrap gap-2">
+                    <!-- Filter chips will be added here dynamically -->
+                </div>
+            </div>
+
+            <!-- Statistics Section -->
+            <div id="stats-section" class="mb-8 hidden animate-fade-in">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-card hover:shadow-card-hover transition-shadow">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-gray-700 dark:text-gray-300 font-medium">Tổng công việc</h3>
+                            <div class="w-8 h-8 flex items-center justify-center rounded-full bg-primary-100 dark:bg-primary-900 text-primary-600 dark:text-primary-400">
+                                <i class="fas fa-tasks"></i>
+                            </div>
+                        </div>
+                        <p id="total-tasks" class="text-3xl font-bold text-gray-800 dark:text-white">0</p>
+                        <div class="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                            <span id="total-tasks-change" class="font-medium"></span>
+                        </div>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-card hover:shadow-card-hover transition-shadow">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-gray-700 dark:text-gray-300 font-medium">Cần làm</h3>
+                            <div class="w-8 h-8 flex items-center justify-center rounded-full bg-danger-100 dark:bg-danger-900 text-danger-600 dark:text-danger-400">
+                                <i class="fas fa-clipboard-list"></i>
+                            </div>
+                        </div>
+                        <p id="todo-tasks" class="text-3xl font-bold text-gray-800 dark:text-white">0</p>
+                        <div class="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                            <span id="todo-tasks-percent" class="font-medium"></span> tổng số công việc
+                        </div>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-card hover:shadow-card-hover transition-shadow">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-gray-700 dark:text-gray-300 font-medium">Đang làm</h3>
+                            <div class="w-8 h-8 flex items-center justify-center rounded-full bg-warning-100 dark:bg-warning-900 text-warning-600 dark:text-warning-400">
+                                <i class="fas fa-spinner"></i>
+                            </div>
+                        </div>
+                        <p id="inprogress-tasks" class="text-3xl font-bold text-gray-800 dark:text-white">0</p>
+                        <div class="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                            <span id="inprogress-tasks-percent" class="font-medium"></span> tổng số công việc
+                        </div>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-card hover:shadow-card-hover transition-shadow">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-gray-700 dark:text-gray-300 font-medium">Hoàn thành</h3>
+                            <div class="w-8 h-8 flex items-center justify-center rounded-full bg-success-100 dark:bg-success-900 text-success-600 dark:text-success-400">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                        </div>
+                        <p id="done-tasks" class="text-3xl font-bold text-gray-800 dark:text-white">0</p>
+                        <div class="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                            <span id="done-tasks-percent" class="font-medium"></span> tổng số công việc
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-card">
+                        <h3 class="text-gray-800 dark:text-white font-medium mb-4">Tiến độ công việc</h3>
+                        <div class="chart-container">
+                            <div class="chart-bar" style="left: 40px; width: 60px; height: 0%;" data-value="0">
+                                <div class="chart-value">0</div>
+                                <div class="chart-label">Cần làm</div>
+                            </div>
+                            <div class="chart-bar" style="left: 140px; width: 60px; height: 0%;" data-value="0">
+                                <div class="chart-value">0</div>
+                                <div class="chart-label">Đang làm</div>
+                            </div>
+                            <div class="chart-bar" style="left: 240px; width: 60px; height: 0%;" data-value="0">
+                                <div class="chart-value">0</div>
+                                <div class="chart-label">Hoàn thành</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-card">
+                        <h3 class="text-gray-800 dark:text-white font-medium mb-4">Phân bổ theo nhãn</h3>
+                        <div id="tags-distribution" class="space-y-3">
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="text-gray-700 dark:text-gray-300">Công việc</span>
+                                    <span class="text-gray-700 dark:text-gray-300" id="work-tag-count">0</span>
+                                </div>
+                                <div class="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                    <div id="work-tag-bar" class="h-full bg-blue-500" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="text-gray-700 dark:text-gray-300">Cá nhân</span>
+                                    <span class="text-gray-700 dark:text-gray-300" id="personal-tag-count">0</span>
+                                </div>
+                                <div class="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                    <div id="personal-tag-bar" class="h-full bg-pink-500" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="text-gray-700 dark:text-gray-300">Học tập</span>
+                                    <span class="text-gray-700 dark:text-gray-300" id="study-tag-count">0</span>
+                                </div>
+                                <div class="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                    <div id="study-tag-bar" class="h-full bg-green-500" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="text-gray-700 dark:text-gray-300">Sức khỏe</span>
+                                    <span class="text-gray-700 dark:text-gray-300" id="health-tag-count">0</span>
+                                </div>
+                                <div class="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                    <div id="health-tag-bar" class="h-full bg-orange-500" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="text-gray-700 dark:text-gray-300">Tài chính</span>
+                                    <span class="text-gray-700 dark:text-gray-300" id="finance-tag-count">0</span>
+                                </div>
+                                <div class="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                    <div id="finance-tag-bar" class="h-full bg-purple-500" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Task Board -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- To Do Column -->
+            <div class="task-column bg-white dark:bg-gray-800 rounded-lg shadow-card" data-column="todo">
+                <div class="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 rounded-t-lg sticky top-0 z-10">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-lg font-semibold text-gray-700 dark:text-gray-300 flex items-center">
+                            <span class="w-3 h-3 rounded-full bg-danger-500 mr-2"></span>
+                            Cần làm
+                            <span id="todo-count" class="ml-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm px-2 py-1 rounded-full">0</span>
+                        </h2>
+                        <div class="flex items-center">
+                            <button class="column-add-btn w-8 h-8 flex items-center justify-center rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700" data-status="todo">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button class="column-options-btn w-8 h-8 flex items-center justify-center rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 ml-1">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 task-list" id="todo-list"></div>
+            </div>
+
+            <!-- In Progress Column -->
+            <div class="task-column bg-white dark:bg-gray-800 rounded-lg shadow-card" data-column="inprogress">
+                <div class="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 rounded-t-lg sticky top-0 z-10">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-lg font-semibold text-gray-700 dark:text-gray-300 flex items-center">
+                            <span class="w-3 h-3 rounded-full bg-warning-500 mr-2"></span>
+                            Đang làm
+                            <span id="inprogress-count" class="ml-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm px-2 py-1 rounded-full">0</span>
+                        </h2>
+                        <div class="flex items-center">
+                            <button class="column-add-btn w-8 h-8 flex items-center justify-center rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700" data-status="inprogress">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button class="column-options-btn w-8 h-8 flex items-center justify-center rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 ml-1">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 task-list" id="inprogress-list"></div>
+            </div>
+
+            <!-- Done Column -->
+            <div class="task-column bg-white dark:bg-gray-800 rounded-lg shadow-card" data-column="done">
+                <div class="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 rounded-t-lg sticky top-0 z-10">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-lg font-semibold text-gray-700 dark:text-gray-300 flex items-center">
+                            <span class="w-3 h-3 rounded-full bg-success-500 mr-2"></span>
+                            Hoàn thành
+                            <span id="done-count" class="ml-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm px  class="ml-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm px-2 py-1 rounded-full">0</span>
+                        </h2>
+                        <div class="flex items-center">
+                            <button class="column-add-btn w-8 h-8 flex items-center justify-center rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700" data-status="done">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button class="column-options-btn w-8 h-8 flex items-center justify-center rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 ml-1">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 task-list" id="done-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for adding/editing tasks -->
+    <div id="task-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center hidden z-50">
+        <div class="modal-content bg-white dark:bg-gray-800 rounded-lg w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="sticky top-0 bg-white dark:bg-gray-800 z-10 p-4 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex justify-between items-center">
+                    <h3 id="modal-title" class="text-xl font-semibold text-gray-800 dark:text-white">Thêm công việc mới</h3>
+                    <button id="close-modal" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-4">
+                <form id="task-form">
+                    <input type="hidden" id="task-id">
+                    <input type="hidden" id="task-status" value="todo">
+                    
+                    <div class="mb-4">
+                        <label for="task-title" class="block text-gray-700 dark:text-gray-300 mb-2">Tiêu đề</label>
+                        <input type="text" id="task-title" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-600" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="task-description" class="block text-gray-700 dark:text-gray-300 mb-2">Mô tả</label>
+                        <textarea id="task-description" rows="3" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-600"></textarea>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label for="task-priority" class="block text-gray-700 dark:text-gray-300 mb-2">Ưu tiên</label>
+                            <select id="task-priority" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-600">
+                                <option value="low">Thấp</option>
+                                <option value="medium" selected>Trung bình</option>
+                                <option value="high">Cao</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="task-due-date" class="block text-gray-700 dark:text-gray-300 mb-2">Hạn chót</label>
+                            <input type="date" id="task-due-date" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-600">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-gray-700 dark:text-gray-300 mb-2">Nhãn</label>
+                        <div class="flex flex-wrap gap-2">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="tag-work" class="tag-checkbox mr-1" value="work">
+                                <label for="tag-work" class="text-gray-700 dark:text-gray-300">Công việc</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="tag-personal" class="tag-checkbox mr-1" value="personal">
+                                <label for="tag-personal" class="text-gray-700 dark:text-gray-300">Cá nhân</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="tag-study" class="tag-checkbox mr-1" value="study">
+                                <label for="tag-study" class="text-gray-700 dark:text-gray-300">Học tập</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="tag-health" class="tag-checkbox mr-1" value="health">
+                                <label for="tag-health" class="text-gray-700 dark:text-gray-300">Sức khỏe</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="tag-finance" class="tag-checkbox mr-1" value="finance">
+                                <label for="tag-finance" class="text-gray-700 dark:text-gray-300">Tài chính</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="block text-gray-700 dark:text-gray-300">Công việc con</label>
+                            <button type="button" id="add-subtask-btn" class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 text-sm">
+                                <i class="fas fa-plus mr-1"></i> Thêm
+                            </button>
+                        </div>
+                        <div id="subtasks-container" class="space-y-2 mb-2">
+                            <!-- Subtasks will be added here -->
+                        </div>
+                        <div class="flex items-center">
+                            <input type="text" id="new-subtask" class="flex-grow px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-600" placeholder="Thêm công việc con...">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-gray-700 dark:text-gray-300 mb-2">Thời gian dự kiến</label>
+                        <div class="flex items-center">
+                            <input type="number" id="task-estimated-hours" min="0" max="999" class="w-16 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-600 mr-2" placeholder="0">
+                            <span class="text-gray-700 dark:text-gray-300 mr-4">giờ</span>
+                            <input type="number" id="task-estimated-minutes" min="0" max="59" class="w-16 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-600 mr-2" placeholder="0">
+                            <span class="text-gray-700 dark:text-gray-300">phút</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-gray-700 dark:text-gray-300 mb-2">Phụ thuộc vào</label>
+                        <select id="task-dependencies" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-600">
+                            <option value="">Không có</option>
+                            <!-- Task options will be added dynamically -->
+                        </select>
+                        <div id="dependencies-container" class="mt-2 space-y-2">
+                            <!-- Dependencies will be added here -->
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-gray-700 dark:text-gray-300 mb-2">Ghi chú</label>
+                        <textarea id="task-notes" rows="2" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-600" placeholder="Thêm ghi chú..."></textarea>
+                    </div>
+                    
+                    <div class="flex justify-end">
+                        <button type="button" id="cancel-btn" class="px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-500 mr-2">
+                            Hủy
+                        </button>
+                        <button type="submit" id="save-task-btn" class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">
+                            <i class="fas fa-save mr-1"></i>
+                            Lưu
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Templates Modal -->
+    <div id="templates-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center hidden z-50">
+        <div class="modal-content bg-white dark:bg-gray-800 rounded-lg w-full max-w-md mx-4">
+            <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xl font-semibold text-gray-800 dark:text-white">Mẫu công việc</h3>
+                    <button id="close-templates-modal" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-4">
+                <div class="mb-4">
+                    <input type="text" id="template-search" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-600" placeholder="Tìm kiếm mẫu...">
+                </div>
+                <div id="templates-container" class="max-h-96 overflow-y-auto">
+                    <!-- Templates will be added here -->
+                    <div class="template-card">
+                        <div class="template-title text-gray-800 dark:text-white">Báo cáo hàng tuần</div>
+                        <div class="template-description">Tạo báo cáo tổng hợp công việc trong tuần</div>
+                        <div class="template-tags">
+                            <span class="template-tag">Công việc</span>
+                            <span class="template-tag">Báo cáo</span>
+                        </div>
+                    </div>
+                    <div class="template-card">
+                        <div class="template-title text-gray-800 dark:text-white">Lịch hẹn khám sức khỏe</div>
+                        <div class="template-description">Đặt lịch khám sức khỏe định kỳ</div>
+                        <div class="template-tags">
+                            <span class="template-tag">Sức khỏe</span>
+                            <span class="template-tag">Cá nhân</span>
+                        </div>
+                    </div>
+                    <div class="template-card">
+                        <div class="template-title text-gray-800 dark:text-white">Học khóa học mới</div>
+                        <div class="template-description">Theo dõi tiến độ học tập khóa học mới</div>
+                        <div class="template-tags">
+                            <span class="template-tag">Học tập</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 flex justify-between">
+                    <button id="create-template-btn" class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">
+                        <i class="fas fa-plus mr-1"></i>
+                        Tạo mẫu mới
+                    </button>
+                    <button id="use-template-btn" class="px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-500">
+                        Sử dụng mẫu
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Archive Modal -->
+    <div id="archive-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center hidden z-50">
+        <div class="modal-content bg-white dark:bg-gray-800 rounded-lg w-full max-w-md mx-4">
+            <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xl font-semibold text-gray-800 dark:text-white">Công việc đã lưu trữ</h3>
+                    <button id="close-archive-modal" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-4">
+                <div class="mb-4">
+                    <input type="text" id="archive-search" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-600" placeholder="Tìm kiếm công việc đã lưu trữ...">
+                </div>
+                <div id="archive-container" class="max-h-96 overflow-y-auto">
+                    <!-- Archived tasks will be added here -->
+                </div>
+                <div class="mt-4 flex justify-end">
+                    <button id="clear-archive-btn" class="px-4 py-2 bg-danger-600 text-white rounded-lg hover:bg-danger-700">
+                        <i class="fas fa-trash mr-1"></i>
+                        Xóa tất cả
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Dialog -->
+    <div id="confirmation-overlay" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm hidden" style="z-index: 1000; display: none;"></div>
+    <div id="confirmation-dialog" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-800 rounded-lg p-6 max-w-sm w-full shadow-lg hidden" style="z-index: 1001; display: none;">
+        <div class="text-center mb-6">
+            <div class="w-12 h-12 rounded-full bg-warning-100 dark:bg-warning-900 text-warning-600 dark:text-warning-400 flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-exclamation-triangle text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">Xác nhận</h3>
+            <p id="confirmation-message" class="text-gray-600 dark:text-gray-400">Bạn có chắc chắn muốn thực hiện hành động này?</p>
+        </div>
+        <div class="flex justify-center gap-4">
+            <button id="cancel-confirmation" class="px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-500">
+                Hủy
+            </button>
+            <button id="confirm-action" class="px-4 py-2 bg-danger-600 text-white rounded-lg hover:bg-danger-700">
+                Xác nhận
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <div class="flex items-center">
+            <i id="toast-icon" class="mr-2"></i>
+            <span id="toast-message"></span>
+        </div>
+        <button id="close-toast" class="ml-4 text-white">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="js/script.js"></script>
+</body>
+</html>
